@@ -8,7 +8,209 @@
   <meta name="viewport" content="width=device-width" />
   <title>MDUI主题切换器</title>
   <link rel="stylesheet" href="https://cdn.bootcss.com/mdui/0.4.0/css/mdui.min.css" />
-  <link rel="stylesheet" href="stylesheet.css" />
+  <style>
+    /*调色板样式*/
+
+    #wheel {
+      position: relative;
+      height: 100%;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+      flex-direction: row;
+      -webkit-justify-content: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center
+    }
+
+    .is-small-screen .mdl-gen #wheel {
+      min-height: 100vw
+    }
+
+    #wheel svg {
+      width: 100%;
+      height: 100%
+    }
+
+    @media (min-width: 840px) {
+      #wheel svg {
+        max-width: 100%;
+        width: 100%
+      }
+    }
+
+    #wheel .mdl-gen-download {
+      position: absolute;
+      left: 50%;
+      top: 50%
+    }
+
+    #wheel .mdl-gen-download a {
+      -webkit-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+
+    #wheel g[data-color] {
+      opacity: 1;
+      outline:none;
+      transition: opacity .2s cubic-bezier(.4, 0, 1, 1)
+    }
+
+    #wheel .selector {
+      opacity: 0;
+      transition: opacity .4s cubic-bezier(.4, 0, 1, 1);
+      fill: #BDBDBD
+    }
+
+    #wheel .selected .selector {
+      opacity: 1
+    }
+
+    #wheel .label {
+      text-anchor: middle;
+      opacity: 0;
+      transition: opacity .4s cubic-bezier(.4, 0, 1, 1);
+      fill: #fff;
+      font-size: 24px
+    }
+
+    #wheel .selected--1 .label--1,
+    #wheel .selected--2 .label--2 {
+      opacity: 1
+    }
+
+    #wheel svg.hide-nonaccents g[data-color="blue-grey"]:not(.selected),
+    #wheel svg.hide-nonaccents g[data-color="brown"]:not(.selected),
+    #wheel svg.hide-nonaccents g[data-color="grey"]:not(.selected) {
+      opacity: .12
+    }
+
+    #wheel .selected {
+      opacity: 1 !important
+    }
+
+    .mdl-gen>.mdl-grid {
+      max-width: 1280px;
+      padding: 0
+    }
+
+    .mdl-gen__preview {
+      position: relative;
+      height: 350px
+    }
+
+    .mdl-gen__preview .mdl-layout__container {
+      height: auto
+    }
+
+    .mdl-gen__preview .mdl-layout__content {
+      padding: 32px;
+      background-color: #EFEFEF;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -webkit-justify-content: flex-start;
+      -ms-flex-pack: start;
+      justify-content: flex-start;
+      -webkit-align-items: flex-start;
+      -ms-flex-align: start;
+      align-items: flex-start
+    }
+
+    .mdl-gen__preview .mdl-layout__content a {
+      margin: 0
+    }
+
+    .mdl-gen__preview .mdl-layout__content a {
+      -webkit-align-self: flex-end;
+      -ms-flex-item-align: end;
+      align-self: flex-end
+    }
+
+    .mdl-gen__preview .mdl-layout__content h3 {
+      margin-top: 0
+    }
+
+    .mdl-gen__panel--right {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -webkit-align-items: stretch;
+      -ms-flex-align: stretch;
+      align-items: stretch;
+      -webkit-justify-content: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      padding-bottom: 0
+    }
+
+    .mdl-gen__desc strong,
+    .mdl-gen__desc p {
+      display: block;
+      margin-bottom: 32px;
+      color: rgba(0, 0, 0, .54)
+    }
+
+    .mdl-gen__cdn .demo-code {
+      box-sizing: border-box
+    }
+
+    .content {
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 1280px;
+      margin-bottom: 80px
+    }
+
+    /*响应式兼容*/
+
+    @media screen and (min-width:1024px) {
+      .pad {
+        max-width: 768px;
+      }
+      #wheel {
+        height: 450px;
+        width: 450px;
+      }
+    }
+
+    .pad-card {
+      min-height: 300px;
+      padding: 10px;
+    }
+
+    .pad-subheader {
+      font-weight: 500;
+    }
+    .preview{
+      background-color: #EFEFEF;
+      height: 450px;
+    }
+    ::selection{
+      background-color: #b3d4fc;
+      text-shadow:none;
+    }
+    .mdui-typo{
+      color: rgba(0,0,0,.54);
+    }
+    .fix{
+      margin-bottom: 0px;
+    }
+    .preview .mdui-typo{
+      height:100%;
+    }
+  </style>
 </head>
 
 <body class="mdui-color-grey-200">
@@ -24,271 +226,23 @@
   <span class="mdui-subheader pad pad-subheader mdui-center">主题配色</span>
   <div class="pad pad-card mdui-card mdui-center">
     <div id="wheel" class="mdui-center">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 650 650" preserveAspectRatio="xMidYMid meet" width="650" height="650" class="">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs>
           <filter id="drop-shadow">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="3.2"></feGaussianBlur>
-            <feOffset dx="0" dy="0" result="offsetblur"></feOffset>
-            <feFlood flood-color="rgba(0,0,0,1)"></feFlood>
-            <feComposite in2="offsetblur" operator="in"></feComposite>
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3.2" />
+            <feOffset dx="0" dy="0" result="offsetblur" />
+            <feFlood flood-color="rgba(0,0,0,1)" />
+            <feComposite in2="offsetblur" operator="in" />
             <feMerge>
-              <feMergeNode></feMergeNode>
-              <feMergeNode in="SourceGraphic"></feMergeNode>
+              <feMergeNode />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>
-        <g class="wheel--maing" transform="translate(325,325)">
-          <g data-color="Deep Orange" id="Deep Orange" transform="rotate(208.42105263157893)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(255, 87, 34);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(230, 74, 25);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-208.42105263157893)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-208.42105263157893)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Red" id="Red" transform="rotate(227.36842105263156)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(244, 67, 54);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(211, 47, 47);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-227.36842105263156)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-227.36842105263156)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Deep Purple" id="Deep Purple" transform="rotate(284.2105263157895)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(103, 58, 183);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(81, 45, 168);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-284.2105263157895)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-284.2105263157895)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Blue" id="Blue" transform="rotate(322.1052631578947)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(33, 150, 243);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(25, 118, 210);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-322.1052631578947)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-322.1052631578947)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Indigo" id="Indigo" transform="rotate(303.1578947368421)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(63, 81, 181);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(48, 63, 159);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-303.1578947368421)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-303.1578947368421)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Purple" id="Purple" transform="rotate(265.2631578947368)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(156, 39, 176);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(123, 31, 162);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-265.2631578947368)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-265.2631578947368)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Brown" id="Brown" transform="rotate(151.57894736842104)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(121, 85, 72);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(93, 64, 55);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-151.57894736842104)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-151.57894736842104)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Teal" id="Teal" transform="rotate(18.94736842105263)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(0, 150, 136);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(0, 121, 107);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-18.94736842105263)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-18.94736842105263)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Pink" id="Pink" transform="rotate(246.3157894736842)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(233, 30, 99);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(194, 24, 91);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-246.3157894736842)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-246.3157894736842)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Light Blue" id="Light Blue" transform="rotate(341.05263157894734)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(3, 169, 244);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(2, 136, 209);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-341.05263157894734)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-341.05263157894734)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Green" id="Green" transform="rotate(37.89473684210526)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(76, 175, 80);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(56, 142, 60);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-37.89473684210526)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-37.89473684210526)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Lime" id="Lime" transform="rotate(75.78947368421052)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(205, 220, 57);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(175, 180, 43);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-75.78947368421052)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-75.78947368421052)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Amber" id="Amber" transform="rotate(113.68421052631578)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(255, 193, 7);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(255, 160, 0);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-113.68421052631578)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-113.68421052631578)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Cyan" id="Cyan" transform="rotate(0)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(0, 188, 212);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(0, 151, 167);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(0)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(0)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Grey" id="Grey" transform="rotate(189.4736842105263)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(158, 158, 158);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(97, 97, 97);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-189.4736842105263)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-189.4736842105263)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Blue Grey" id="Blue Grey" transform="rotate(170.52631578947367)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(96, 125, 139);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(69, 90, 100);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-170.52631578947367)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-170.52631578947367)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Orange" id="Orange" transform="rotate(132.6315789473684)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(255, 152, 0);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(245, 124, 0);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-132.6315789473684)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-132.6315789473684)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Yellow" id="Yellow" transform="rotate(94.73684210526315)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(255, 235, 59);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(251, 192, 45);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-94.73684210526315)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-94.73684210526315)" dy="0.5ex">2</text>
-            </g>
-          </g>
-          <g data-color="Light Green" id="Light Green" transform="rotate(56.84210526315789)" tabindex="0" class="">
-            <g class="polygons" filter="">
-              <polygon points="32.94244769737761,-94.41819284282845 82.35611924344403,-236.0454821070711 0,-250 0,-140" style="fill: rgb(139, 195, 74);"></polygon>
-              <polygon points="32.94244769737761,-94.41819284282845 46.11942677632865,-132.1854699799598 0,-140 0,-100" style="fill: rgb(104, 159, 56);"></polygon>
-            </g>
-            <path class="selector" d=" M 40.58743365058543 -243.2271552125793 L 24.852895361930592 -273.4550707222589 A 23.866215590706414 23.866215590706414 18.94736842105263 1 1 65.28441937535095 -266.70824265179726 z "></path>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--1" transform="rotate(-56.84210526315789)" dy="0.5ex">1</text>
-            </g>
-            <g transform="translate(47.0814230346791,-282.143500046592)">
-              <text class="label label--2" transform="rotate(-56.84210526315789)" dy="0.5ex">2</text>
-            </g>
-          </g>
-        </g>
+        <g class="wheel--maing"></g>
       </svg>
       <div class="mdl-gen-download">
-        <a id="apply" class="mdui-ripple mdui-fab mdui-color-theme-accent" mdui-tooltip="{content:'应用主题'}" data-upgraded=",MaterialButton,MaterialRipple" download="material.min.css"><i class="mdui-icon material-icons">check</i></a>
+        <a id="apply" class="mdui-ripple mdui-fab mdui-color-theme-accent" mdui-tooltip="{content: '应用主题'}"><i class="mdui-icon material-icons">done</i></a>
       </div>
     </div>
     <div class="mdui-m-a-2 preview">
@@ -299,7 +253,7 @@
           <div class="mdui-toolbar-spacer"></div>
           <div class="mdui-textfield mdui-textfield-expandable mdui-float-right">
             <button class="mdui-textfield-icon mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></button>
-            <input class="mdui-textfield-input" type="text" placeholder="Search"/>
+            <input class="mdui-textfield-input" type="text" placeholder="Search" />
             <button class="mdui-textfield-close mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">close</i></button>
           </div>
         </div>
@@ -307,7 +261,7 @@
       <div class="mdui-typo mdui-p-a-4">
         <h1>你好！</h1>
         <p>
-          举头望涵涵，低头思第一。这个主题切换器用的怎么样啊？(按钮仅供预览，没有实际作用)
+          这只是个栗子，不要多多在意，包括这些演示按钮也是假的！
         </p>
         <p>
           <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-m-a-1" data-preview-accent>好</button>
@@ -319,7 +273,302 @@
     </div>
   </div>
   <script src="https://cdn.bootcss.com/mdui/0.4.0/js/mdui.min.js"></script>
-  <script src="actions.js"></script>
+  <script>
+    /*这必须凌驾于JS上*/
+    var $ = mdui.JQ;//MDUI的选择器，不必引入MDUI了。
+    var currentTheme = {
+		primary:"green",
+		accent:"blue",
+		preview:function(primary,accent){
+			$('[data-preview-primary]').removeClass('mdui-color-'+this.primary);
+			$('[data-preview-accent]').removeClass('mdui-color-'+this.accent+'-accent');
+			$('[data-preview-primary]').addClass('mdui-color-'+(this.primary=primary||this.primary));
+			$('[data-preview-accent]').addClass('mdui-color-'+(this.accent=accent||this.accent)+'-accent');
+		},
+		apply:function(){
+			$('body').removeClass('mdui-theme-primary-'+this.origin.primary);
+			$('body').removeClass('mdui-theme-accent-'+this.origin.accent);
+			this.origin={primary:this.primary,accent:this.accent};
+			$('body').addClass('mdui-theme-primary-'+this.origin.primary);
+			$('body').addClass('mdui-theme-accent-'+this.origin.accent);
+		},
+		origin:{primary:"green",accent:"blue"}
+	};
+    //发现MDL官网的图形是画的，所以……嘿嘿嘿。
+    function init() {
+      "use strict";
+      var e = document.querySelector("#wheel > svg")
+        , a = new MaterialCustomizer(e,function(primary,accent){
+		  currentTheme.preview(primary,accent);
+          console.info("已更新主题：%s,%s",primary,accent);
+        })
+        , r = document.querySelector("#apply");
+        r.addEventListener("click", function () {
+          //应用主题
+		  currentTheme.apply();
+		  mdui.snackbar("已应用");
+        });
+		a.setSelectedColors(currentTheme.primary,currentTheme.accent);
+		currentTheme.preview();
+		currentTheme.apply();
+		return {
+			circle:a,
+			apply:r
+		};
+    }
+    MaterialCustomizer = function () {
+      "use strict";
+      function e(e) {
+        return e.parentElement || e.parentNode
+      }
+      //var t = ["青", "鸭绿", "绿", "浅绿", "酸橙", "黄", "琥珀", "橙", "棕", "蓝灰", "灰", "深橙", "红", "粉", "紫", "深紫", "靛", "蓝", "浅蓝"]
+	  var t = ['cyan','teal','green','light-green','lime','yellow','amber','orange','brown','blue-grey','grey','deep-orange','red','pink','purple','deep-purple','indigo','blue','light-blue']
+        , another = ['cyan','teal','green','light-green','lime','yellow','amber','orange','brown','blue-grey','grey','deep-orange','red','pink','purple','deep-purple','indigo','blue','light-blue']
+        , a = ["blue-grey", "brown", "grey"]
+        , r = ["red", "pink", "purple", "deep-purple", "indigo", "blue", "light-blue", "cyan", "teal", "green", "light-green", "lime", "yellow", "amber", "orange", "deep-orange", "brown", "grey", "blue-grey"]
+        , n = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "A100", "A200", "A400", "A700"]
+        , i = [["255,235,238", "255,205,210", "239,154,154", "229,115,115", "239,83,80", "244,67,54", "229,57,53", "211,47,47", "198,40,40", "183,28,28", "255,138,128", "255,82,82", "255,23,68", "213,0,0"], ["252,228,236", "248,187,208", "244,143,177", "240,98,146", "236,64,122", "233,30,99", "216,27,96", "194,24,91", "173,20,87", "136,14,79", "255,128,171", "255,64,129", "245,0,87", "197,17,98"], ["243,229,245", "225,190,231", "206,147,216", "186,104,200", "171,71,188", "156,39,176", "142,36,170", "123,31,162", "106,27,154", "74,20,140", "234,128,252", "224,64,251", "213,0,249", "170,0,255"], ["237,231,246", "209,196,233", "179,157,219", "149,117,205", "126,87,194", "103,58,183", "94,53,177", "81,45,168", "69,39,160", "49,27,146", "179,136,255", "124,77,255", "101,31,255", "98,0,234"], ["232,234,246", "197,202,233", "159,168,218", "121,134,203", "92,107,192", "63,81,181", "57,73,171", "48,63,159", "40,53,147", "26,35,126", "140,158,255", "83,109,254", "61,90,254", "48,79,254"], ["227,242,253", "187,222,251", "144,202,249", "100,181,246", "66,165,245", "33,150,243", "30,136,229", "25,118,210", "21,101,192", "13,71,161", "130,177,255", "68,138,255", "41,121,255", "41,98,255"], ["225,245,254", "179,229,252", "129,212,250", "79,195,247", "41,182,246", "3,169,244", "3,155,229", "2,136,209", "2,119,189", "1,87,155", "128,216,255", "64,196,255", "0,176,255", "0,145,234"], ["224,247,250", "178,235,242", "128,222,234", "77,208,225", "38,198,218", "0,188,212", "0,172,193", "0,151,167", "0,131,143", "0,96,100", "132,255,255", "24,255,255", "0,229,255", "0,184,212"], ["224,242,241", "178,223,219", "128,203,196", "77,182,172", "38,166,154", "0,150,136", "0,137,123", "0,121,107", "0,105,92", "0,77,64", "167,255,235", "100,255,218", "29,233,182", "0,191,165"], ["232,245,233", "200,230,201", "165,214,167", "129,199,132", "102,187,106", "76,175,80", "67,160,71", "56,142,60", "46,125,50", "27,94,32", "185,246,202", "105,240,174", "0,230,118", "0,200,83"], ["241,248,233", "220,237,200", "197,225,165", "174,213,129", "156,204,101", "139,195,74", "124,179,66", "104,159,56", "85,139,47", "51,105,30", "204,255,144", "178,255,89", "118,255,3", "100,221,23"], ["249,251,231", "240,244,195", "230,238,156", "220,231,117", "212,225,87", "205,220,57", "192,202,51", "175,180,43", "158,157,36", "130,119,23", "244,255,129", "238,255,65", "198,255,0", "174,234,0"], ["255,253,231", "255,249,196", "255,245,157", "255,241,118", "255,238,88", "255,235,59", "253,216,53", "251,192,45", "249,168,37", "245,127,23", "255,255,141", "255,255,0", "255,234,0", "255,214,0"], ["255,248,225", "255,236,179", "255,224,130", "255,213,79", "255,202,40", "255,193,7", "255,179,0", "255,160,0", "255,143,0", "255,111,0", "255,229,127", "255,215,64", "255,196,0", "255,171,0"], ["255,243,224", "255,224,178", "255,204,128", "255,183,77", "255,167,38", "255,152,0", "251,140,0", "245,124,0", "239,108,0", "230,81,0", "255,209,128", "255,171,64", "255,145,0", "255,109,0"], ["251,233,231", "255,204,188", "255,171,145", "255,138,101", "255,112,67", "255,87,34", "244,81,30", "230,74,25", "216,67,21", "191,54,12", "255,158,128", "255,110,64", "255,61,0", "221,44,0"], ["239,235,233", "215,204,200", "188,170,164", "161,136,127", "141,110,99", "121,85,72", "109,76,65", "93,64,55", "78,52,46", "62,39,35"], ["250,250,250", "245,245,245", "238,238,238", "224,224,224", "189,189,189", "158,158,158", "117,117,117", "97,97,97", "66,66,66", "33,33,33"], ["236,239,241", "207,216,220", "176,190,197", "144,164,174", "120,144,156", "96,125,139", "84,110,122", "69,90,100", "55,71,79", "38,50,56"]]
+        , l = function (e, onActivate) {
+          this.wheel = e,
+            this.onActivateBackup = onActivate||(function(){}),
+            this.paletteIndices = r,
+            this.lightnessIndices = n,
+            this.palettes = i,
+            this.init_()
+        };
+      return l.prototype.init_ = function () {
+        this.config = {
+          width: 650,
+          height: 650,
+          r: 250,
+          ri: 100,
+          hd: 40,
+          c: 40,
+          mrs: .5,
+          alphaIncr: .005,
+          colorsTexts: t, //Natural language
+          colorsCode: another //Program identifier
+        },
+          this.forbiddenAccents = a,
+          this.calculateValues_(),
+          this.wheel && this.buildWheel_()
+      }
+        ,
+        l.prototype.calculateValues_ = function () {
+          var e = this.config;
+          e.alphaDeg = 360 / e.colorsCode.length,
+            e.alphaRad = e.alphaDeg * Math.PI / 180,
+            e.rs = (e.c + e.r) * Math.sin(e.alphaRad / 2),
+            e.rs *= e.mrs,
+            e.selectorAlphaRad = 2 * Math.atan(e.rs / e.c),
+            e.gamma1 = e.alphaRad / 2 - e.selectorAlphaRad / 2,
+            e.gamma2 = e.alphaRad / 2 + e.selectorAlphaRad / 2,
+            e.cx = (e.c + e.r) * Math.sin(e.alphaRad) / 2,
+            e.cy = -(e.c + e.r) * (1 + Math.cos(e.alphaRad)) / 2,
+            this.config = e
+        }
+        ,
+        l.prototype.buildWheel_ = function () {
+          var e = this.config
+            , t = this.wheel.querySelector("g.wheel--maing")
+            , a = this.wheel.parentNode;
+          this.wheel.setAttribute("viewBox", "0 0 " + this.config.width + " " + this.config.height),
+            this.wheel.setAttribute("preserveAspectRatio", "xMidYMid meet"),
+            this.wheel.setAttribute("width", this.config.width),
+            this.wheel.setAttribute("height", this.config.height);
+          var r = this.generateFieldTemplate_()
+            , n = "http://www.w3.org/2000/svg";
+          e.colorsCode.forEach(function (i, l) {
+            for (var o = r.cloneNode(!0), s = document.createElement("div"), c = 1; c <= 2; c++) {
+              var h = document.createElementNS(n, "g")
+                , d = document.createElementNS(n, "text");
+              d.setAttribute("class", "label label--" + c),
+                d.setAttribute("transform", "rotate(" + -e.alphaDeg * l + ")"),
+                d.setAttribute("dy", "0.5ex"),
+                d.textContent = "" + c,
+                h.appendChild(d),
+                h.setAttribute("transform", "translate(" + e.cx + "," + e.cy + ")"),
+                o.appendChild(h)
+            }
+            o.setAttribute("data-color", i),
+              o.id = i,
+              o.querySelector(".polygons > *:nth-child(1)").style.fill = "rgb(" + this.getColor(i, "500") + ")",
+              o.querySelector(".polygons > *:nth-child(2)").style.fill = "rgb(" + this.getColor(i, "700") + ")",
+              o.querySelector(".polygons").addEventListener("click", this.fieldClicked_.bind(this)),
+              o.setAttribute("transform", "rotate(" + e.alphaDeg * l + ")"),
+              t.appendChild(o),
+              //o.setAttribute("mdui-tooltip",JSON.stringify({content:e.colorsTexts[l]})),//已发现工具提示会产生bugs
+              a.appendChild(s)
+          }
+            .bind(this)),
+            t.setAttribute("transform", "translate(" + e.width / 2 + "," + e.height / 2 + ")")
+        }
+        ,
+        l.prototype.generateFieldTemplate_ = function () {
+          var e = "http://www.w3.org/2000/svg"
+            , t = this.config
+            , a = document.createElementNS(e, "g")
+            , r = document.createElementNS(e, "g")
+            , n = document.createElementNS(e, "polygon");
+          n.setAttribute("points", [[t.ri * Math.sin(t.alphaRad + t.alphaIncr), -t.ri * Math.cos(t.alphaRad + t.alphaIncr)].join(","), [t.r * Math.sin(t.alphaRad + t.alphaIncr), -t.r * Math.cos(t.alphaRad + t.alphaIncr)].join(","), [0, -t.r].join(","), [0, -(t.ri + t.hd)].join(",")].join(" "));
+          var i = document.createElementNS(e, "polygon");
+          i.setAttribute("points", [[t.ri * Math.sin(t.alphaRad + t.alphaIncr), -t.ri * Math.cos(t.alphaRad + t.alphaIncr)].join(","), [(t.ri + t.hd) * Math.sin(t.alphaRad + t.alphaIncr), -(t.ri + t.hd) * Math.cos(t.alphaRad + t.alphaIncr)].join(","), [0, -(t.ri + t.hd)].join(","), [0, -t.ri].join(",")].join(" ")),
+            r.appendChild(n),
+            r.appendChild(i),
+            r.setAttribute("class", "polygons"),
+            a.appendChild(r);
+          var l = document.createElementNS(e, "path");
+          return l.setAttribute("class", "selector"),
+            l.setAttribute("d", " M " + t.r * Math.sin(t.alphaRad) / 2 + " " + -(t.r * (1 + Math.cos(t.alphaRad)) / 2) + " L " + (t.cx - t.rs * Math.cos(t.gamma1)) + " " + (t.cy - t.rs * Math.sin(t.gamma1)) + " A " + t.rs + " " + t.rs + " " + t.alphaDeg + " 1 1 " + (t.cx + t.rs * Math.cos(t.gamma2)) + " " + (t.cy + t.rs * Math.sin(t.gamma2)) + " z "),
+            a.appendChild(l),
+            a
+        }
+        ,
+        l.prototype.getNumSelected = function () {
+          return this.wheel.querySelector(".selected--2") ? 2 : this.wheel.querySelector(".selected--1") ? 1 : 0
+        }
+        ,
+        l.prototype.fieldClicked_ = function (t) {
+          var a = e(e(t.target))
+            , r = a.getAttribute("data-color")
+            , n = this.getNumSelected();
+          if ((a.getAttribute("class") || "").indexOf("selected--1") === -1 || 1 !== n)
+            switch (n) {
+              case 1:
+                if (this.forbiddenAccents.indexOf(r) !== -1)
+                  return;
+                this.highlightField(a.getAttribute("data-color")),
+                  this.wheel.setAttribute("class", ""),
+                  window.requestAnimationFrame(function () {
+                    this.onActivateBackup(this.getSelectedPrimary(),this.getSelectedSecondary());
+                  }
+                    .bind(this));
+                break;
+              case 2:
+                Array.prototype.forEach.call(this.wheel.querySelector("g.wheel--maing").childNodes, function (e) {
+                  e.setAttribute("class", ""),
+                    e.querySelector(".polygons").setAttribute("filter", "")
+                });
+              case 0:
+                this.highlightField(a.getAttribute("data-color")),
+                  window.requestAnimationFrame(function () {
+                    this.wheel.setAttribute("class", "hide-nonaccents")
+                  }
+                    .bind(this))
+            }
+        }
+        ,
+        l.prototype.replaceDict = function (e, t) {
+          for (var a in t)
+            e = e.replace(new RegExp(a, "g"), t[a]);
+          return e
+        }
+        ,
+        l.prototype.urlsafeName = function (e) {
+          return e.toLowerCase().replace(" ", "_")
+        }
+        ,
+        l.prototype.getSelectedPrimary = function () {
+          return this.wheel.querySelector(".selected--1").getAttribute("data-color")
+        }
+        ,
+        l.prototype.getSelectedSecondary = function () {
+          return this.wheel.querySelector(".selected--2").getAttribute("data-color")
+        }
+        ,
+        //l.prototype.onActivate = this.onActivateBackup,
+        l.prototype.highlightField = function (t) {
+          var a = this.wheel.querySelector('[data-color="' + t + '"]')
+            , r = e(a);
+          r.removeChild(a),
+            r.appendChild(a),
+            a.setAttribute("class", "selected selected--" + (this.getNumSelected() + 1));
+          var n = window.navigator.msPointerEnabled;
+          n || a.querySelector(".polygons").setAttribute("filter", "url(#drop-shadow)")
+        }
+        ,
+        l.prototype.getColor = function (e, t) {
+          var a = this.palettes[this.paletteIndices.indexOf(e)];
+          return a ? a[this.lightnessIndices.indexOf(t)] : null
+        }
+        ,
+        l.prototype.processTemplate = function (e, t) {
+          var a = this.getColor(e, "500")
+            , r = this.getColor(e, "700")
+            , n = this.getColor(t, "A200");
+          return this.replaceDict(this.template, {
+            "\\$color-primary-dark": r,
+            "\\$color-primary-contrast": this.calculateTextColor(a),
+            "\\$color-accent-contrast": this.calculateTextColor(n),
+            "\\$color-primary": a,
+            "\\$color-accent": n
+          })
+        }
+        ,
+        l.prototype.calculateChannel = function (e) {
+          return e /= 255,
+            e < .03928 ? e / 12.92 : Math.pow((e + .055) / 1.055, 2.4)
+        }
+        ,
+        l.prototype.calculateLuminance = function (e) {
+          var t = e.split(",")
+            , a = this.calculateChannel(parseInt(t[0]))
+            , r = this.calculateChannel(parseInt(t[1]))
+            , n = this.calculateChannel(parseInt(t[2]));
+          return .2126 * a + .7152 * r + .0722 * n
+        }
+        ,
+        l.prototype.calculateContrast = function (e, t) {
+          var a = this.calculateLuminance(e) + .05
+            , r = this.calculateLuminance(t) + .05;
+          return Math.max(a, r) / Math.min(a, r)
+        }
+        ,
+        l.prototype.calculateTextColor = function (e) {
+          var t = 3.1
+            , a = "255,255,255"
+            , r = "66,66,66"
+            , n = this.calculateContrast(e, a);
+          if (n >= t)
+            return a;
+          var i = this.calculateContrast(e, r);
+          return i > n ? r : a
+        }
+        ,
+        l.prototype.replaceKeyword = function (e, t, a) {
+          return e.replace(new RegExp(t, "g"), a)
+        }
+        ,
+		l.prototype.setSelectedColors = function(primary, accent) {
+			//清除已选择颜色
+			if(this.getNumSelected()>0)
+				switch(this.getNumSelected()){
+					case 1:
+						if(this.getSelectedPrimary()=='red')//别问我为什么非得是红色，自古红蓝出CP
+							this.highlightField('blue');
+						else
+							this.highlightField('red');
+					case 2:
+						Array.prototype.forEach.call(this.wheel.querySelector("g.wheel--maing").childNodes, function (e) {
+							e.setAttribute("class", ""),
+							e.querySelector(".polygons").setAttribute("filter", "")
+						});
+						break;
+					default:
+						console.warn("函数可能已遭到破坏");
+						break;
+				}
+			//设置颜色
+			this.highlightField(primary);
+			this.highlightField(accent);
+			return [primary,accent];
+		}
+		,
+        l
+    }(),
+      "undefined" != typeof module && (module.exports = MaterialCustomizer);
+    var customizer = init();
+  </script>
 </body>
 
 </html>
