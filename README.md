@@ -2,6 +2,8 @@
 
 ## 简介
 
+目前在JQ22网站有投稿，[可以点我查看](http://www.jq22.com/yanshi19463)。
+
 [MDUI](https://www.mdui.org)是个不错的Material Design框架，支持多种主题配色，可惜的是，即使是官网，开发者也只是简单的弄了个radio选择：
 
 ![MDUI官网的主题切换器](https://i.loli.net/2018/07/03/5b3b129210c90.png)
@@ -15,92 +17,48 @@
 * 支持主题预览
 * 响应式兼容
 * 长的漂亮（长得不漂亮我就不会做这个调色板了）
-* 100%符合Material Design标准
+* 大部分符合Material Design标准（除了有2个FAB不符合外）
 
 ## FAQ
 
-### 我想让主题能保存到浏览器里，下次自动加载，怎么办？
-
-在按下保存按钮时将主题信息存储到localStorage里，下次载入时再从localStorage读取就可以了。不会自己实现的话，可以在`actions.js`里追加一下代码：
-
-```js
-$("#apply").on('click',function(){
-  localStorage.theme = JSON.stringify(setting);//酌情修改theme
-});
-if(localStorage.theme)
-  theme.set.page(JSON.stringify(localStorage.theme).primary,JSON.stringify(localStorage.theme).accent);
-else
-  localStorage.theme=setting;
-```
-
 ### 我想让主题保存在服务器里，怎么办？
 
-如上，只是按下保存时触发的是AJAX。
+按下保存时触发是AJAX上传。
 
-```js
-$("#apply").on('click',function(){
-  $.ajax({
-    url:"yourPHPFile.php",//请修改，否则会404
-    type:"POST",
-    data:setting,
-    error:function(){
-      mdui.snackbar("保存失败！");
-    },
-    success:function(){
-      mdui.snackbar("保存成功");
-    }
-  });
-});
-$.ajax({
-  url:"yourPHPFile.php",//请修改，否则会404
-  type:"GET",
-  error:function(){
-    mdui.snackbar("主题加载失败！");
-  },
-  success:function(rq,st,xhr){
-    var t = JSON.parse(rq);
-    theme.set.page(t.primary,t.accent);
-  }
-});
+假想发送到后台的数据为：
+
+```json
+{
+  "primary":"主色",
+  "accent":"强调色"
+}
 ```
 
-后端逻辑请自己脑补，这里以用PHP将信息存储在JSON里为栗子：
+这里以用PHP将信息存储在JSON里为栗子：
 
 ```php
 <?php
-  $default = [
-    'primary'=>'blue',
-    'accent'=>'pink'
-  ];//默认主题
-  $file = "theme.json";//主题存储的位置
+  $file = "settings.json";
   switch($_SERVER["REQUEST_METHOD"]){
     case "GET":
-      header("Content-Type:application/json");
-      if(!file_exists($file))
-        echo json_encode($default,JSON_PRETTY_PRINT);
-      else {
-        $f = fopen($file,"r");
-        $s = "";
-        while(!feof($f)) $s.=fgets($f);
-        fclose($f);
-        echo $s;
+      if(!file_exists){
+        header("HTTP/1.1 404 Not Found");
+        die(json_encode(['error'=>true,'data'=>'服务器无存储']));
       }
+      die(json_encode('error'=>false,'data'=>json_decode(file_get_contents($file),true)));
       break;
     case "POST":
       if(empty($_POST["primary"])||empty($_POST["accent"])){
-        header("HTTP/1.1 400 Bad Request");
+        header("HTTP/1.1 406 Unacceptable");
+        die(json_encode(['error'=>true,'data'=>'数据不完整']));
       }else{
-        $f = fopen($file);
-        fputs(json_encode([
-          'primary'=>$_POST["primary"],
-          'accent'=>$_POST["accent"]
-        ],JSON_PRETTY_PRINT),$f);
+        file_put_contents($file,json_encode(['primary'=>$_POST['primary'],'accent'=>$_POST['accent']]));
         header("HTTP/1.1 203 Created");
       }
       break;
     default:
       header("HTTP/1.1 405 Method Not Allowed");
-      header("Allow: GET, POST");
+      die(json_encode(['error'=>true,'方法不允许']));
       break;
   }
 ```
